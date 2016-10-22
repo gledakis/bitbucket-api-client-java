@@ -32,6 +32,7 @@ import static org.junit.Assert.*;
  * @author Kaz Nishimura
  * @since 1.0
  */
+@Ignore
 public class ClientUtilitiesTest {
 
     @Before

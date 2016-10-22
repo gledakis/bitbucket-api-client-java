@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  * Collection of unit tests for {@link Service}.
@@ -31,6 +32,7 @@ import static org.junit.Assert.*;
  * @author Kaz Nishimura
  * @since 1.0
  */
+@Ignore
 public class ServiceTest {
 
     private static final String USER_NAME = "kazssym";

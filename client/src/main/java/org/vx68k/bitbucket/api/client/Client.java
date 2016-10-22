@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.net.URI;
 import javax.json.Json;
 import javax.json.JsonReader;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.BasicAuthentication;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpExecuteInterceptor;
@@ -46,6 +47,8 @@ public class Client implements Serializable {
     private String user;
 
     private String password;
+    
+    private String access_token;
 
     /**
      * Constructs this object with no property values.
@@ -140,6 +143,33 @@ public class Client implements Serializable {
     }
 
     /**
+     * Returns a Bitbucket REST API service with given access_token for
+     * Basic authentication.
+     * @param access_token
+     * @return Bitbucket REST API service
+     * @throws NullPointerException if either the user name or the password is
+     * <code>null</code>
+     * @since 4.0
+     */
+    public Service getService(String access_token) {
+        return new RestService(new BasicAuthentication(user, password));
+    }
+
+    /**
+     * @return the access_token
+     */
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    /**
+     * @param access_token the access_token to set
+     */
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
+    }
+
+    /**
      * Bitbucket REST API service.
      * @author Kaz Nishimura
      * @since 2.0
@@ -213,7 +243,18 @@ public class Client implements Serializable {
         @Override
         public BitbucketUser getCurrentUser() throws IOException {
             if (authentication == null) {
-                return null;
+//                return null;
+                 if (currentUser == null) {
+                    URI endpoint = getEndpoint(USER_ENDPOINT_PATH);
+                    HttpRequest request = requestFactory.buildGetRequest(
+                            new GenericUrl(endpoint.toString()));
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setAuthorization("Bearer " + access_token);
+                    request.setHeaders(headers);
+                    currentUser = getUser(request.execute());
+                }               
+                    return currentUser;
+
             }
 
             synchronized (this) {
